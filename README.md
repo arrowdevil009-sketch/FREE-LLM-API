@@ -1,5 +1,3 @@
-# FREE LLM API
-A TOTAL NEW API
 <h1 align="center">
 	<a href="https://github.com/mnfst/awesome-free-llm-apis">
 		<img src="media/awesome-free-llm-apis.png" width="500" alt="Awesome Free LLM APIs">
