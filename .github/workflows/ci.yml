@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Validate data.json
+        run: node scripts/validate-data.js
+      - name: README generates from data.json
+        run: node scripts/generate-readme.js
+      - name: Verify generated endpoint labels
+        run: node --test scripts/test-generated-endpoints.js
+      - name: Sources and links still match data.json
+        run: |
+          git fetch -q origin main
+          changed="$(git diff --name-only origin/main...HEAD)"
+          if echo "$changed" | grep -qx sources.json; then
+            node scripts/check-sources.js --out /tmp/sources-report.json --strict
+          elif echo "$changed" | grep -qx data.json; then
+            node scripts/check-sources.js --out /tmp/sources-report.json --consistent
+          fi
